@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Artefact API test</title>
+    <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+    <script src="plotly-2.12.1.min.js" type="text/javascript"></script>
+    <script src="jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script>
+
+        updateGraph = function(data, status) {
+            $('#status').html(null)
+            graph = document.getElementById('v_graph');
+            layout = {
+                margin: {t: 0, r: 0, l: 30, b: 30}
+            }
+            data1 = [{x: data.time, y: data.voltage}];
+            data2 = [{x: data.time, y: data.current}];
+            Plotly.newPlot('v_graph', data1, layout);
+            Plotly.newPlot('c_graph', data2, layout);
+    	}
+
+    	simError = function(data, status) {
+    	    $('#status').text(data.responseJSON.message);
+	    }
+
+	    settings = {}
+	    loadSettings = function(data, status) {
+	        settings = data;
+        }
+
+        gatherParameters = function() {
+            params = {};
+            voff = $('#voff').val();
+            params.effective_voltage_offset = voff;
+            return params;
+        }
+
+        $(document).ready(function() {
+            // Populate settings form
+            $.ajax({
+                url: "http://localhost:5000/",
+                method: "get",
+                contentType: "application/json; charset=utf-8",
+                success: loadSettings,
+                error: simError,
+            });
+
+            // Run sim
+            $('#runsim').click(function() {
+                data = gatherParameters(),
+                $.ajax({
+                    url: "http://localhost:5000/",
+                    method: "post",
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    success: updateGraph,
+                    error: simError,
+                });
+        	});
+    	});
+    </script>
+</head>
+    <body>
+        <div>
+            <div id="status"></div>
+            <div id="v_graph" class="graph"></div>
+            <div id="c_graph" class="graph"></div>
+            <button type="button" id="runsim">Run simulation</button>
+            <div>
+                <input value="0" id="voff" />
+                <label for="#voff">Effective voltage offset (mV)</label>
+            </div>
+        </div>
+    </body>
+</html>

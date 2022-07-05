@@ -1,3 +1,4 @@
+flask-cors
 flask-limiter
 flask-restful
 myokit

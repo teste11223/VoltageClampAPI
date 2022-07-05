@@ -59,13 +59,13 @@ use membrane.V
 V_c = engine.pace * 1 [mV]
     desc: Command voltage
     in [mV]
-Cm_est = 0.9 * Cm
+Cm_est = 100
     in [pF]
     desc: Estimated cell capacitance
 R_series = 10e-3 [GOhm]
     in [GOhm]
     desc: Series resistance (~MegaOhms)
-R_series_est = 0.9 * R_series
+R_series_est = 10e-3 [GOhm]
     in [GOhm]
     desc: Estimated series resistance
 alpha = 0.7
@@ -73,7 +73,7 @@ alpha = 0.7
 C_prs = 4 [pF]
     in [pF]
     desc: 'Parasitic'/pipette capacitance at electrode
-C_prs_est = 0.9 * C_prs
+C_prs_est = 3 [pF]
     in [pF]
     desc: Estimated 'parasitic'/pipette capacitance at electrode
 
