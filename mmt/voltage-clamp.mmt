@@ -104,9 +104,8 @@ dot(I_out) = (I_in - I_out) / tau_out
 
 # Supercharging
 # From https://doi.org/10.1007/978-1-4419-1229-9_4 Fig. 18
-dot(V_est) = piecewise(
-        Cm_est < 1e-6, 0,
-        R_series_est < 1e-6, 0,
+dot(V_est) = if(
+        Cm_est < 1e-6 or R_series_est < 1e-6, 0,
         (V_c - V_est) / ((1 - alpha) * Cm_est * R_series_est)
     )
     in [mV]
