@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 ## Testing
 
-1. Run `./app.py` (inside the virtual environment).
+1. Run `python app.py` (inside the virtual environment).
 2. Open `html/index.html` in a browser & try it out.
 
 ## Preliminary API:
