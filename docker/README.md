@@ -1,32 +1,56 @@
 # Docker image
 
-If you already know how to use docker, use the steps below to set up a container running the web app.
-If not, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+If you already know how to use docker, fire up a container and read the info below to see what it does (and how to use it).
 
-## The docker container contains code to run a server:
+If you're new to docker, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-The artefacts `app` runs as server inside a docker container.
-It listens to local requests (inside the container) using the WSG Interface (WSGI).
-An NGINX server runs inside the same container
-This listens for requests, and passes them on to the app (via WSGI).
-In the future, it might also do things like control access or serve static files.
-(For example, it might host a website that uses the artefact api to let users run simulations 🤯.
+## The docker container runs a server
 
-## You can map the container port onto a host port
+The artefacts `app` can run as an "application server".
+This means that it handles HTTP requests on a port, but not one that we've exposed to the outside world.
+It _can_ do this, but it isn't designed to be a full & secure web server, so we only do this for development.
+
+Instead, we use NGINX as our web server.
+NGINX will listen to requests from the outside world (in this case from outside our docker container) and pass them on to our app.
+Benefits of adding NGINX into the mix include the option to serve static files and control who gets to access the app.
+
+Finally, for reasons to do with performance and process management, we don't even use our app as an application server, but place a Gunicorn server in between:
+
+```
+Outside world --> NGINX --> Gunicorn + flask
+```
+
+## The container port is mapped to a host port
 
 This means that if you try to access that port on the host machine, you get redirected to the nginx server in the container. 
 
 TODO: DESCRIBE HOW TO DO THAT HERE.
 
-## You can pass external requests on to this port
+```
+                         --- Docker container ---
+                         |                      |                               
+Port on host machine --> |--> NGINX --> etc.    |
+                         |                      |                               
+                         ------------------------                  
+```
 
-For example, if you have an Apache server running, it can pass off requests in a certain location to the nginx-in-the-container:
+## Yet another server passes requests on to this port
+
+Instead of exposing the port on the host machine that we've mapped to, we redirect to it using another server.
+For example, if the host machine has an Apache server listening on port 80, it can pass requests to a certain address to port `4321`.
 
 ```
 <Location /artefact-webapp>
    ProxyPass http://localhost:4321
    ProxyPassReverse http://localhost:4321
 </Location>
+```
+
+So the whole thing looks like this:
+
+```
+Outside -->   Apache   -->  Container
+ world      on port 80     on port 4321
 ```
 
 ## Why'd we have to go and make things so complicated
