@@ -5,14 +5,18 @@ If not, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## The docker container contains code to run a server:
 
-The artefacts `app` runs as WSGI supporting server (inside a docker container).
-It listens for requests from the local machine.
-The same docker container contains an NGINX server.
-This listens on a port connected to the docker container's host, and passes requests on to the app (via WSGI).
+The artefacts `app` runs as server inside a docker container.
+It listens to local requests (inside the container) using the WSG Interface (WSGI).
+An NGINX server runs inside the same container
+This listens for requests, and passes them on to the app (via WSGI).
+In the future, it might also do things like control access or serve static files.
+(For example, it might host a website that uses the artefact api to let users run simulations 🤯.
 
-## You can map the container port onto a host port:
+## You can map the container port onto a host port
 
-TODO
+This means that if you try to access that port on the host machine, you get redirected to the nginx server in the container. 
+
+TODO: DESCRIBE HOW TO DO THAT HERE.
 
 ## You can pass external requests on to this port
 
@@ -32,9 +36,7 @@ But if you want to share with other things, e.g. have websites running over port
 So that's where apache (in the above example) comes in.
 
 It should be possible for apache to talk directly to the `app` inside the container, via WSGI (and using e.g. `mod-wsgi`).
-However, to be a bit more future-proof we are adding NGINX in between, so that we can also e.g. serve static files, should this become necessary.
-It also means we can use any other NGINX features (e.g. for access control) without implementing them in our app, or having to mess with the main Apache server.
+However, to be a bit more future-proof we are adding NGINX in between, so that we can also e.g. serve static files or use other NGINX features like access control, *without implementing them in our app, or having to mess with the main Apache server*.
 
 Finally having everything (except the big apache server) in a container means we can use system packages to set everything up.
 This is the easiest (only?) way to go, because server software has historically been designed under the assumption of a dedicated server.
-
