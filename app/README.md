@@ -13,7 +13,8 @@ To test, run
 1. Run `python app.py` inside the virtual environment (this starts a development server).
 2. Open `../html/index.html` in a browser and try it out.
 
-Alternatively (and often easier), `pip install requests` and use `app/client.py` instead of the web page.
+For development you might want to use a Python client instead of a JS one.
+To do this, `pip install requests` and run `app/client.py`.
 
 ## How it works [🐢🐢⋯]ᵀ⋯
 
