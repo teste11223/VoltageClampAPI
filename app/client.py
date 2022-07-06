@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# Very simple test client, in Python.
+#
 import json
 import requests
 

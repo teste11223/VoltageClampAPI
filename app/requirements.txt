@@ -1,4 +1,4 @@
 flask-cors
 flask-limiter
 flask-restful
-myokit
+myokit>=1.33.6
