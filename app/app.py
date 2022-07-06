@@ -33,6 +33,16 @@ sim_default = simulations.DefaultSimulation()
 
 
 # Create the "resources" this API provides
+class Overview(Resource):
+    """ Provides a list of simulations. """
+    def get(self):
+        return {
+            'simulations': [
+                'default',
+            ]
+        }
+
+
 class Sim(Resource):
     """ Provides access to a simulation. """
     def __init__(self, sim):
@@ -40,16 +50,15 @@ class Sim(Resource):
         self.sim = sim
 
     def post(self):
-        """ Run a simulation. """
         return self.sim.run(app.logger)
 
     def get(self):
-        """ Return settings info. """
         return self.sim.info()
 
 
 # Set up API resource routing
 api = Api(app)
+api.add_resource(Overview, '/')
 api.add_resource(Sim, '/default', resource_class_kwargs={'sim': sim_default})
 
 

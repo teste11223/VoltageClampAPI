@@ -8,13 +8,24 @@ import sys
 import requests
 
 
-url = 'http://127.0.0.1:5000/default'
+url = 'http://127.0.0.1:5000'
 head = {'Content-Type': 'application/json'}
 
+if 'list' in sys.argv:
 
-if 'get' in sys.argv:
-
+    # List of simulations
     r = requests.get(f'{url}')
+    j = r.json()
+
+    print('Simulations:')
+    for s in j['simulations']:
+        print(f'  {s}')
+
+
+elif 'get' in sys.argv:
+
+    # Simulation info
+    r = requests.get(f'{url}/default')
     j = r.json()
 
     print(j['description'])
@@ -26,7 +37,8 @@ if 'get' in sys.argv:
 
 else:
 
-    data = {
+    # Run a simulation
+    data = json.dumps({
         #'membrane_conductance': 10,
         'membrane_capacitance': 20,
         'pipette_capacitance': 5,
@@ -37,8 +49,8 @@ else:
         #'series_resistance_compensation_enabled': True,
         #'series_resistance_compensation': 70,
         'effective_voltage_offset': 0,
-    }
+    })
 
-    r = requests.post(f'{url}', data=json.dumps(data), headers=head)
+    r = requests.post(f'{url}/default', data=data, headers=head)
     print(r.json())
 
