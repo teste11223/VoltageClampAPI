@@ -241,6 +241,12 @@ drwxrwxrwt 2 root root 4096 Jun 22 00:00 lock
 We can stop it again with `nginx -s stop`.
 See `nginx -h` for more options.
 
+We can have a look at the nginx configuation in `/etc/nginx/nginx.conf`.
+
+To add a site, we add it to `/etc/nginx/sites/enabled`.
+
+I followed [this](https://flask.palletsprojects.com/en/2.1.x/deploying/nginx/) and [this](https://flask.palletsprojects.com/en/2.1.x/deploying/proxy_fix/).
+
 
 
 

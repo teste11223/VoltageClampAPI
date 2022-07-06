@@ -16,7 +16,14 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-# Add limiter
+# Running in production? Then assume we're behind a proxy (e.g. nginx)
+if __name__ != '__main__':
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+    )
+
+# Add limiter (note that nginx etc. should handle this too).
 # https://flask-limiter.readthedocs.io/en/stable/
 limiter = Limiter(
     app,

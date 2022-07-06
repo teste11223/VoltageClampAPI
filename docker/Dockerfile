@@ -27,14 +27,10 @@ WORKDIR /opt/vclamp
 RUN git clone $repo repo
 RUN pip install -r repo/app/requirements.txt
 
-# Give the www-data group ownership of the repo source dir, and everything
-# inside repo/app. Then give read access
-RUN chgrp www-data repo
-RUN chgrp www-data repo/app -R
-RUN chmod g+rx repo
-RUN chmod g+rx repo/app -R
-
 # Install gunicorn, link to config file in working dir
 RUN pip install gunicorn
 RUN ln -s repo/docker/gunicorn.conf.py
 
+# Configure nginx
+RUN rm /etc/nginx/sites-enabled/*
+RUN ln -s repo/docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
