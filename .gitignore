@@ -17,4 +17,4 @@ docs/_build/
 venv/
 
 # Cached simulations
-app/cache
+app/cache/

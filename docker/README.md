@@ -14,11 +14,13 @@ Instead, we use NGINX as our web server.
 NGINX will listen to requests from the outside world (in this case from outside our docker container) and pass them on to our app.
 Benefits of adding NGINX into the mix include the option to serve static files and control who gets to access the app.
 
-Finally, for reasons to do with performance and process management, we don't even use our app as an application server, but place a Gunicorn server in between:
+Finally, for reasons to do with performance and process management, we don't even use the application server provided by flask (started with `app.run()`), but instead start an application server with `gunicorn`.
 
 ```
 Outside world --> NGINX --> Gunicorn + flask
 ```
+
+We write the last bit as `gunicorn + flask` because they run in the same Python process: `gunicorn` imports our flask `app` module directly.
 
 ## The container port is mapped to a host port
 
@@ -67,8 +69,9 @@ This is the easiest (only?) way to go, because server software has historically 
 
 ## Security
 
-Because we're running in a docker container, and because there is no database or user information or any other sensitive data inside the container, we can run nginx as root.
-Nginx itself will start worker processes as the user www-data.
-We will also run gunicorn as www-data.
-This means that gunicorn needs to be able to access the app and its data directory.
-To this end, we give `www-data` read access
+We're running in a docker container, and there is no database, user information, or any sensitive data inside the container.
+This means the only security risk is someone somehow changing what this container serves.
+We will run nginx as root, but with worker processes running in `www-data`.
+We will also run `gunicorn` as `www-data`.
+This means it can access, but not modify, files inside `app`.
+

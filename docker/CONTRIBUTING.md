@@ -232,8 +232,14 @@ Now start it manually:
 ```
 nginx
 ls /run
-
+total 8
+drwxrwxrwt 2 root root 4096 Jun 22 00:00 lock
+-rw-r--r-- 1 root root    4 Jul  6 23:23 nginx.pid
+-rw-rw-r-- 1 root utmp    0 Jun 22 00:00 utmp
 ```
+
+We can stop it again with `nginx -s stop`.
+See `nginx -h` for more options.
 
 
 
