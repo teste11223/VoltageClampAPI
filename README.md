@@ -10,4 +10,3 @@ If you want to **deploy** the app, look at [docker/README.md](./docker/README.md
 
 If you want to **modify** the app, or just play around with it locally, look at [app/README.md](./app/README.md).
 
-For more details, see [CONTRIBUTING.md](./CONTRIBUTING.md).
