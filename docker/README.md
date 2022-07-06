@@ -64,3 +64,11 @@ However, to be a bit more future-proof we are adding NGINX in between, so that w
 
 Finally having everything (except the big apache server) in a container means we can use system packages to set everything up.
 This is the easiest (only?) way to go, because server software has historically been designed under the assumption of a dedicated server.
+
+## Security
+
+Because we're running in a docker container, and because there is no database or user information or any other sensitive data inside the container, we can run nginx as root.
+Nginx itself will start worker processes as the user www-data.
+We will also run gunicorn as www-data.
+This means that gunicorn needs to be able to access the app and its data directory.
+To this end, we give `www-data` read access

@@ -3,12 +3,29 @@
 # Very simple test client, in Python.
 #
 import json
+import sys
+
 import requests
 
-url = 'http://127.0.0.1:5000/'
+
+url = 'http://127.0.0.1:5000/default'
 head = {'Content-Type': 'application/json'}
 
-if False:
+
+if 'get' in sys.argv:
+
+    r = requests.get(f'{url}')
+    j = r.json()
+
+    print(j['description'])
+    for p in j['parameters']:
+        print(p['name'])
+        for k, v in p.items():
+            if k != 'name':
+                print(f'  {k}: {v}')
+
+else:
+
     data = {
         #'membrane_conductance': 10,
         'membrane_capacitance': 20,
@@ -24,12 +41,4 @@ if False:
 
     r = requests.post(f'{url}', data=json.dumps(data), headers=head)
     print(r.json())
-
-
-r = requests.get(f'{url}')
-
-for k, v in r.json().items():
-    print(k)
-    for kk, vv in v.items():
-        print(f'  {kk}: {vv}')
 

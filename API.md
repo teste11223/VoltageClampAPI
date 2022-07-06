@@ -47,11 +47,12 @@ To get information about the available parameters, make a `GET` request.
 This will return a JSON object:
 ```
 {
+    "description": "A short description of this simulation."
     "parameters": [
         {
             "name": ...,
             "description": ...,
-            "default_value": ...,
+            "default": ...,
             "min": ...,
             "max": ...,
             "step", ...
@@ -61,7 +62,7 @@ This will return a JSON object:
 }
 ```
 Here `name` contains the parameter name used in the API, while `description` is a user friendly name including units.
-The default value is given in `default_value`, along with a `minimum` and `maximum` allowed value (anything outside this range will be clipped to the boundaries of the allowed range).
+The default value is given in `default`, along with a `minimum` and `maximum` allowed value (anything outside this range will be clipped to the boundaries of the allowed range).
 A suggested `step` for e.g. slider controls is given in `step`.
 
 All parameter values are floating point numbers.

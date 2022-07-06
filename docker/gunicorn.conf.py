@@ -16,6 +16,6 @@ workers = 1
 threads = 2
 
 # Logging
-accesslog /var/log/gunicorn/access.log
-errorlog /var/log/gunicorn/error.log
+accesslog = "/var/log/gunicorn/access.log"
+errorlog = "/var/log/gunicorn/error.log"
 

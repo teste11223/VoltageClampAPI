@@ -40,7 +40,7 @@
         $(document).ready(function() {
             // Populate settings form
             $.ajax({
-                url: "http://localhost:5000/",
+                url: "http://localhost:5000/default",
                 method: "get",
                 contentType: "application/json; charset=utf-8",
                 success: loadSettings,
@@ -51,7 +51,7 @@
             $('#runsim').click(function() {
                 data = gatherParameters(),
                 $.ajax({
-                    url: "http://localhost:5000/",
+                    url: "http://localhost:5000/default",
                     method: "post",
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8",

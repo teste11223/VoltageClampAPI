@@ -1,5 +1,5 @@
 #
-# Start nginx and unicorn
+# Start nginx and unicorn.
 #
 nginx
 gunicorn
