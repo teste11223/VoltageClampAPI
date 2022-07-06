@@ -8,7 +8,10 @@ RUN apt-get install nginx -y
 
 # Install and configure git (make merging the default strategy)
 RUN apt-get install git -y
-RUN git config pull.rebase false --global
+RUN git config --global pull.rebase false
+
+# Just for development
+COPY bashrc root/.bashrc
 
 # Repository URL
 # Can be customised at build time using --build-arg variable=value

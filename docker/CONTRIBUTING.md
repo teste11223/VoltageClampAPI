@@ -163,7 +163,7 @@ RUN git clone $repo
 ```
 The value of an `ARG` can also be change at build time with `--build-arg variable=value`.
 
-## Configure gunicorn
+## Install and configure gunicorn
 
 Gunicorn can be installed via `apt-get`, but this version seems to make some extra assumptions.
 Easier to just pip install it:
@@ -201,5 +201,66 @@ RUN ln -s repo/docker/gunicorn.conf.py
 This creates a dir `/opt/vclamp` that contains this repo in `/opt/vclamp/repo`.
 It then creates a symlink `/opt/vclamp/gunicorn.conf.py` that points to the file in the cloned repo.
 
+We can now start a webserver with `gunicorn`:
+```
+python -m gunicorn --chdir repo/app app:app
+```
+This tells python to load the `gunicorn.__main__` module (change `python` to any other executable if you want to use virtualenvs).
+Gunicorn then changes its working directory to `repo/app`, loads the `app` module, and runs the `app` object in that module.
+
+So if we'd had a dir in the repo called `myproject` with a `flaskthing.py` that created an object `x`, this would be `python -m gunicorn --chdir repo/myoproject flaskthing:x`.
+
+As before, we can connect a second terminal to the container and test with `client.py`.
+
+If we like, we can even connect a third one to run `top`.
+This shows 2 `gunicorn` processes, using almost no CPU until we run a client.
+
+## Configuring nginx
+
+We installed nginx in the container with `apt-get`.
+As said before, we don't have `systemctl`, so how do we start it or see its current states?
+
+First thing to note: no pid file:
+```
+ls /run
+total 4
+drwxrwxrwt 2 root root 4096 Jun 22 00:00 lock
+-rw-rw-r-- 1 root utmp    0 Jun 22 00:00 utmp
+```
+
+Now start it manually:
+```
+nginx
+ls /run
+
+```
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+## Tidying up
+
+After development, try
+```
+docker images -a
+```
+to see all images, including lots of "dangling" ones.
+Clean them up with
+```
+docker images prune
+```
+
+See containers with
+```
+docker ps -a
+```

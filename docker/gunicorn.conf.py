@@ -15,3 +15,7 @@ workers = 1
 # Number of threads per process
 threads = 2
 
+# Logging
+accesslog /var/log/gunicorn/access.log
+errorlog /var/log/gunicorn/error.log
+
