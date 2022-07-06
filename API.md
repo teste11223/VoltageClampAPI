@@ -24,7 +24,7 @@ where `simulations` contains a list of simulation names.
 A simulation is used by making request to `/simulator-name`.
 For example, to use the simulation called `default` you make requests to `/default`.
 
-To run a simulation, make a `POST` request.
+To run a simulation with the default parameters, make a `POST` request.
 This returns a JSON object with the simulation results:
 ```
 {
@@ -34,7 +34,7 @@ This returns a JSON object with the simulation results:
 }
 ```
 
-To change simulation parameters, send a JSON in the `POST` request that maps parameter names to values.
+To run a simulation with changed simulation parameters, send a JSON object in the `POST` request that maps parameter names to values.
 For example:
 ```
 {
