@@ -1,6 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 # Start nginx and unicorn.
+# As per docker standard, we run gunicorn in the foreground! (the docker will
+# exit when the process is done).
 #
 nginx
-runuser -l vclamp -s /bin/bash -c "start-gunicorn.sh"
+su vclamp -c "gunicorn app:app"

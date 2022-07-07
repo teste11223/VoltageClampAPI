@@ -9,30 +9,27 @@ RUN apt-get install nginx -y
 # Just for ease of development
 COPY docker/bashrc root/.bashrc
 
-# Create a central directory to store everything
-ENV VCLAMP=/opt/vclamp
-RUN mkdir $VCLAMP
-WORKDIR $VCLAMP
-
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/*
 COPY docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
 
-# Create a user to run guniconr
+# Create a user to run gunicorn, create logdirs, and install
 RUN useradd -m -s /bin/bash vclamp
-
-# Install gunicorn, link to config file in working dir, create log dirs
-RUN pip install gunicorn
-COPY docker/gunicorn.conf.py $VCLAMP/gunicorn.conf.py
 RUN mkdir /var/log/gunicorn
 RUN chown vclamp /var/log/gunicorn
+RUN pip install gunicorn
 
 # Copy and install the app
-COPY app $VCLAMP/app
-RUN pip install -r $VCLAMP/app/requirements.txt
+ARG vclamp=/opt/vclamp
+COPY app $vclamp
+WORKDIR $vclamp
+RUN pip install -r requirements.txt
+
+# Copy in gunicorn configuration file
+COPY docker/gunicorn.conf.py gunicorn.conf.py
 
 # Initialise the simulations (as root)
-RUN python app/simulations.py
+RUN python simulations.py
 
 # Tidy up
 #RUN apt-get remove build-essential -y
@@ -40,5 +37,5 @@ RUN python app/simulations.py
 #RUN apt-get autoremove -y
 
 # Set the entry point
-COPY docker/start.sh $VCLAMP/start.sh
-#ENTRYPOINT $VCLAMP/start.sh
+COPY docker/start.sh start.sh
+CMD ./start.sh

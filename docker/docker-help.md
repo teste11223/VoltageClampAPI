@@ -272,7 +272,7 @@ See `nginx-site.conf`.
 
 Now start everything up, run gunicorn on port 5000, but call on port 80. It works!
 
-## Entry point
+## Entry point and CMD
 
 Finally, we add an "entry point" script that starts everything:
 
@@ -280,6 +280,47 @@ Finally, we add an "entry point" script that starts everything:
 nginx
 gunicorn --chdir repo/app app:app
 ```
+
+### Run-and-delete
+
+For testing, it's also nice to create containers that are deleted once they are done.
+Assuming our container has an entry point, we can do:
+```
+docker run -it --rm image_name
+```
+Note the lack of "bash" at the end, which specifies to use the entry point instead.
+
+### Run-and-connect
+
+As a final local test before deploying, we can do:
+```
+docker run -it --rm -p 5000:80 artefact/api
+```
+Now we can use a client on the host machine to connect to port 5000!
+
+### Runnin processes in a docker container
+
+Lots of people insist on one process per docker container because someome has told them that's best practice.
+This is not required.
+
+What we do need, is to have the docker run a single process in the foreground: a container invoked with a 
+
+### Using CMD instead
+
+An entry point can't be overruled, but a CMD can, so it's nicer to do:
+
+```
+CMD start.sh
+```
+so that users can invoke it with
+```
+docker run -it --rm -p 5000:80 artefact/api
+```
+or bypass it with
+```
+docker run -it --rm -p 5000:80 artefact/api bash
+```
+
 
 ## Tidying up
 
@@ -297,21 +338,4 @@ See containers with
 ```
 docker ps -a
 ```
-
-## Run-and-delete
-
-For testing, it's also nice to create containers that are deleted once they are done.
-Assuming our container has an entry point, we can do:
-```
-docker run -it --rm image_name
-```
-Note the lack of "bash" at the end, which specifies to use the entry point instead.
-
-## Run-and-connect
-
-As a final local test before deploying, we can do:
-```
-docker run -it --rm -p 5000:80 artefact/api
-```
-Now we can use a client on the host machine to connect to port 5000!
 
