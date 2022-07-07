@@ -31,6 +31,8 @@ So when a user makes a HTTP request, it goes to the proper server, which then pa
 
 The bits you need to know about to make changes to the app are FlaskRESTful and Flask.
 
+The API itself is defined in [API.md](../API.md).
+
 ## Simulations
 
 These are run using Myokit.
