@@ -38,10 +38,14 @@ sudo docker build -t artefact/api . && sudo docker image prune --filter=label=st
 ```
 
 To be able to access logs set up a docker volume
-`sudo docker volume create artefact_logs`
+```
+sudo docker volume create artefact_logs
+```
 
 You can see where the data will be stored (the Mountpoint) by doing:
-`sudo docker volume inspect artefact_logs`
+```
+sudo docker volume inspect artefact_logs
+```
 
 To start the component (in detached mode):
 ```
@@ -51,7 +55,9 @@ docker run -d --always-restart -v artefact_logs:/var/log/gunicorn -p 4242:80 art
 The API is now avaliable on http://localhost:4242 on the host machine you are running the docker component on. If this is a server, you might want to proxy this through the server's webserver. For example on cardiac.nottingham we have proied it through as `https://cardiac.nottingham.ac.uk/artefact-webapp/`
 
 This is achieved with the following config:
-`<Location /artefact-webapp>
+```
+<Location /artefact-webapp>
    ProxyPass http://localhost:4242
    ProxyPassReverse http://localhost:4242
-</Location>`
+</Location>
+```
