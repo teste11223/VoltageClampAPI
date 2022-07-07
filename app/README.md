@@ -14,7 +14,7 @@ To test, run
 2. Open `../html/index.html` in a browser and try it out.
 
 For development you might want to use a Python client instead of a JS one.
-To do this, `pip install requests` and run `app/client.py`.
+To do this, `pip install requests` and run `python client.py`.
 
 ## How it works [🐢🐢⋯]ᵀ
 
