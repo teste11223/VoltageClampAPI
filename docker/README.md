@@ -60,4 +60,3 @@ This is achieved with the following config:
    ProxyPass http://localhost:4242
    ProxyPassReverse http://localhost:4242
 </Location>
-```
