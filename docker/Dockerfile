@@ -13,17 +13,13 @@ RUN git config --global pull.rebase false
 # Just for development
 COPY bashrc root/.bashrc
 
-# Repository URL
-# Can be customised at build time using --build-arg variable=value
-# Note: we define this _after_ all the apt-get installs, so that we don't need
-# to reinstall if the arg changes.
-ARG repo=https://github.com/CardiacModelling/VoltageClampAPI.git
-
 # Create a central directory to store everything
-RUN mkdir /opt/vclamp
-WORKDIR /opt/vclamp
+ARG root=/opt/vlamp
+RUN mkdir $root
+WORKDIR $root
 
 # Download and install the app
+ARG repo=https://github.com/CardiacModelling/VoltageClampAPI.git
 RUN git clone $repo repo
 RUN pip install -r repo/app/requirements.txt
 
@@ -33,4 +29,4 @@ RUN ln -s repo/docker/gunicorn.conf.py
 
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/*
-RUN ln -s repo/docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
+RUN ln -s $root/repo/docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf

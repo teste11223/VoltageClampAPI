@@ -247,6 +247,13 @@ To add a site, we add it to `/etc/nginx/sites/enabled`.
 
 I followed [this](https://flask.palletsprojects.com/en/2.1.x/deploying/nginx/) and [this](https://flask.palletsprojects.com/en/2.1.x/deploying/proxy_fix/).
 
+We can check if the overal and site config files are OK with:
+```
+nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+```
 
 
 

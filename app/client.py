@@ -2,13 +2,16 @@
 #
 # Very simple test client, in Python.
 #
+# The port can be set to 80 by adding command line arg "80".
+#
 import json
 import sys
 
 import requests
 
 
-url = 'http://127.0.0.1:5000'
+port = 80 if '80' in sys.argv else '5000'
+url = 'http://127.0.0.1:{port}'
 head = {'Content-Type': 'application/json'}
 
 if 'list' in sys.argv:
