@@ -38,7 +38,7 @@ docker build -t artefact/api .
 docker system prune -f
 ```
 
-TODO: SOMEHOW RUN THIS
+TODO: SOMEHOW RUN THIS, BUT ROUTE STDOUT AND STDERR TO /VAR/LOG/VCLAMP, AND DAEMONIZE
 ```
 docker run -it --rm -p 5000:80 artefact/api
 ```
