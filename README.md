@@ -11,4 +11,3 @@ If you want to **deploy** the app, look at [docker/README.md](./docker/README.md
 If you want to **modify** the app, or just play around with it locally, look at [app/README.md](./app/README.md).
 
 The actual API is described in [API.md](./API.md).
-*NOTE: The current API does not yet match this document.*
