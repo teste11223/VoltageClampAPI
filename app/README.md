@@ -25,7 +25,8 @@ The app is built using
     - [Werkzeug](https://palletsprojects.com/p/werkzeug/), which is a tool to write web servers (handling HTTP requests) using the
       - [WSGI](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface), or Web Server Gateway Interface, which is a calling convention to let web servers interact.
       
-What all this means is that we'll create a tiny `app.py` that runs a tiny server which can talk to proper servers (Apache, NGINX, etc.) via the WSG interface.
+What all this means is that we'll create a tiny `app.py` that can either run a tiny server (for development) or be used by an application server such as `gunicorn`.
+This application server can then be connected to proper servers (Apache, NGINX, etc.) via the WSG interface.
 So when a user makes a HTTP request, it goes to the proper server, which then passes it on to our app via the WSG interface. 
 
 The bits you need to know about to make changes to the app are FlaskRESTful and Flask.
