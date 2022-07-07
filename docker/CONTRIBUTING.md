@@ -254,17 +254,18 @@ nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
 ```
 
+See `nginx-site.conf`.
 
+Now start everything up, run gunicorn on port 5000, but call on port 80. It works!
 
+## Entry point
 
+Finally, we add an "entry point" script that starts everything:
 
-
-
-
-
-
-
-
+```
+nginx
+gunicorn --chdir repo/app app:app
+```
 
 ## Tidying up
 

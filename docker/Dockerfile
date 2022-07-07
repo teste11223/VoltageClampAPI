@@ -32,3 +32,12 @@ RUN chown www-data /var/log/gunicorn
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/*
 RUN ln -s $root/repo/docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
+
+# Initialise the simulations
+WORKDIR $root/repo/app
+RUN python simulations.py
+WORKDIR $root
+
+# Set the entry point
+ENTRYPOINT $root/repo/docker/start.sh
+

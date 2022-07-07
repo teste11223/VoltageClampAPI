@@ -53,7 +53,6 @@ class Overview(Resource):
 class Sim(Resource):
     """ Provides access to a simulation. """
     def __init__(self, sim):
-        print(f'I GOT A SIM f{sim}')
         self.sim = sim
 
     def post(self):
