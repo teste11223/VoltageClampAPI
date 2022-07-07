@@ -16,7 +16,7 @@ To test, run
 For development you might want to use a Python client instead of a JS one.
 To do this, `pip install requests` and run `app/client.py`.
 
-## How it works [🐢🐢⋯]ᵀ⋯
+## How it works [🐢🐢⋯]ᵀ
 
 The app is built using 
 
