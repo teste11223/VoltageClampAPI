@@ -171,3 +171,8 @@ class DefaultSimulation(Simulation):
         path = os.path.join(DIR_CACHE, cls.filename)
         myokit.Simulation(m, p, path=path)
 
+
+if __name__ == '__main__':
+    print('Initialising simulations...')
+    Simulation.initialise()
+    print('Done.')
