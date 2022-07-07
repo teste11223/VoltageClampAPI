@@ -39,5 +39,5 @@ RUN python simulations.py
 WORKDIR $root
 
 # Set the entry point
-ENTRYPOINT $root/repo/docker/start.sh
+ENTRYPOINT ./repo/docker/start.sh
 

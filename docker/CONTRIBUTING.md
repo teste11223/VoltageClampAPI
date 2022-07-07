@@ -20,7 +20,6 @@ As user:
 ```
 docker run -it ubuntu bash
 ```
-here `-it` specifies we want to run in interactive mode, `ubuntu` is the name of the image we want to use, and `bash` is the shell we'll use inside the container.
 
 See running containers:
 ```
@@ -62,6 +61,21 @@ shows
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
 ubuntu       latest    27941809078c   4 weeks ago   77.8MB
 ```
+
+## Starting a container
+
+To create a container from an image, and run a command on it, use e.g.
+```
+docker run -it ubuntu bash
+```
+this `run`s the command `bash` on a container created from the image `ubuntu`.
+Because we want to connect to its screen and input, we use the switch `-it`.
+
+To connect to a running container, we use the similar `exec` command:
+```
+docker exec -it some_word_combo bash
+```
+where `some_word_combo` is a name returned by `docker ps`.
 
 ## First thing to do: write a docker file
 
@@ -283,3 +297,20 @@ See containers with
 ```
 docker ps -a
 ```
+
+## Run-and-delete
+
+For testing, it's also nice to create containers that are deleted once they are done.
+Assuming our container has an entry point, we can do:
+```
+docker run -it --rm image_name
+```
+Note the lack of "bash" at the end, which specifies to use the entry point instead.
+
+## Run-and-connect
+
+As a final local test before deploying, we can do:
+```
+docker run -it --rm -p 80:8000 image_name
+```
+

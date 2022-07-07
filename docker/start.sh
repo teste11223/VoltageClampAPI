@@ -4,4 +4,4 @@
 # To be called from the working directory.
 #
 nginx
-gunicorn --chdir repo/app app:app
+runuser -l www-data gunicorn --chdir repo/app app:app
