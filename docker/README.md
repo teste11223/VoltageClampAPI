@@ -6,7 +6,7 @@ If you're new to docker, the stuff in [docker-help.md](./docker-help.md) might b
 
 The stuff that happens inside the container is explained in [design.md](./design.md).
 
-## Development: Building an image and testing locally:
+## Development: Building an image and testing locally
 
 This explains how to build and test the docker image.
 Note that you don't need docker to test the app: see the `app` directory for instructions on how to do that.
