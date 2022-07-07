@@ -16,7 +16,7 @@ To test, run
 For development you might want to use a Python client instead of a JS one.
 To do this, `pip install requests` and run `python client.py`.
 
-## How it works [🐢🐢⋯]ᵀ
+## How the app bit works
 
 The app is built using 
 
@@ -33,7 +33,22 @@ The bits you need to know about to make changes to the app are FlaskRESTful and 
 
 The API itself is defined in [API.md](../API.md).
 
-## Simulations
+## How the simmulations work
+
+Simulations are defined in `simulations.py`.
+
+Each simulation has a name, description, and a list of parameters.
+Each parameter maps to a model variable, and has an API name, default value, and a range defined with `lower`, `upper` and `step`.
+
+Simulations define an `_initialise()` method that handles things like loading a model, creating a protocol, and pre-pacing.
+The final step in this process is to create a **precompiled simulation object**.
+These are a new addition to Myokit, and make it possible to run simulations without compiling.
+To do this, you need to (1) bring your model into the initial state you want your simulation to have, (2) get a protocol ready, and (3) create a simulation with a `path` argument.
+See the `DefaultSimulation` for an example.
+
+When the app is deployed on the server, it will automatically call all the `_initialise` methods to compile the simulations.
+When a request is made to the app's API it will load the compiled sim and use that.
+
 
 These are run using Myokit.
 To make things fast, we compile simulations and store them to disk.
