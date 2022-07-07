@@ -14,7 +14,7 @@ RUN git config --global pull.rebase false
 COPY bashrc root/.bashrc
 
 # Create a central directory to store everything
-ARG root=/opt/vlamp
+ARG root=/opt/vclamp
 RUN mkdir $root
 WORKDIR $root
 
@@ -23,9 +23,11 @@ ARG repo=https://github.com/CardiacModelling/VoltageClampAPI.git
 RUN git clone $repo repo
 RUN pip install -r repo/app/requirements.txt
 
-# Install gunicorn, link to config file in working dir
+# Install gunicorn, link to config file in working dir, create log dirs
 RUN pip install gunicorn
 RUN ln -s repo/docker/gunicorn.conf.py
+RUN mkdir /var/log/gunicorn
+RUN chown www-data /var/log/gunicorn
 
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/*
