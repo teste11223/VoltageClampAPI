@@ -14,24 +14,31 @@ ENV VCLAMP=/opt/vclamp
 RUN mkdir $VCLAMP
 WORKDIR $VCLAMP
 
-# Copy and install the app
-COPY app $VCLAMP/app
-RUN pip install -r $VCLAMP/app/requirements.txt
+# Configure nginx
+RUN rm /etc/nginx/sites-enabled/*
+COPY docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
+
+# Create a user to run guniconr
+RUN useradd -m -s /bin/bash vclamp
 
 # Install gunicorn, link to config file in working dir, create log dirs
 RUN pip install gunicorn
 COPY docker/gunicorn.conf.py $VCLAMP/gunicorn.conf.py
 RUN mkdir /var/log/gunicorn
-RUN chown www-data /var/log/gunicorn
+RUN chown vclamp /var/log/gunicorn
 
-# Configure nginx
-RUN rm /etc/nginx/sites-enabled/*
-COPY docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
+# Copy and install the app
+COPY app $VCLAMP/app
+RUN pip install -r $VCLAMP/app/requirements.txt
 
-# Initialise the simulations
+# Initialise the simulations (as root)
 RUN python app/simulations.py
 
-# Set the entry point
-COPY docker/start.sh start.sh
-ENTRYPOINT start.sh
+# Tidy up
+#RUN apt-get remove build-essential -y
+#RUN apt-get remove libsundials-dev -y
+#RUN apt-get autoremove -y
 
+# Set the entry point
+COPY docker/start.sh $VCLAMP/start.sh
+#ENTRYPOINT $VCLAMP/start.sh

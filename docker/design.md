@@ -68,6 +68,6 @@ This is the easiest (only?) way to go, because server software has historically 
 We're running in a docker container, and there is no database, user information, or any sensitive data inside the container.
 This means the only security risk is someone somehow changing what this container serves.
 We will run nginx as root, but with worker processes running in `www-data`.
-We will also run `gunicorn` as `www-data`.
+We will also run `gunicorn` as a passwordless user `vclamp`.
 This means it can access, but not modify, files inside `app`.
 
