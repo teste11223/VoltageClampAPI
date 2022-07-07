@@ -34,8 +34,7 @@ If it works, this should print out a whole bunch of numbers.
 Build the image, and delete all stopped, dangling etc. things:
 
 ```
-docker build -t artefact/api .
-docker system prune -f
+sudo docker build -t artefact/api . && sudo docker image prune --filter=label=stage=artifact-builder -f
 ```
 
 To be able to access logs set up a docker volume
