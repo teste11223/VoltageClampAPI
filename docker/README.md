@@ -1,10 +1,8 @@
 # Docker image
 
-If you already know how to use docker, fire up a container and read the info below to see what it does (and how to use it).
+If you're new to docker, the stuff in [CONTRIBUTING.md](./CONTRIBUTING.md) might help.
 
-If you're new to docker, see [CONTRIBUTING.md](./CONTRIBUTING.md).
-
-## Quickstart: building an image, running and connecting to a container
+## Development: Building an image and testing locally:
 
 From the `docker` directory (the one that this file is in):
 ```
