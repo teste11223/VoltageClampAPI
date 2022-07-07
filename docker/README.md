@@ -35,7 +35,6 @@ Build the image, and delete all stopped, dangling etc. things:
 
 ```
 docker build -t artefact/api .
-docker system prune -f
 ```
 
 TODO: SOMEHOW RUN THIS, BUT ROUTE STDOUT AND STDERR TO /VAR/LOG/VCLAMP, AND DAEMONIZE
@@ -45,3 +44,20 @@ docker run -it --rm -p 5000:80 artefact/api
 
 TODO: SOMEHOW CONNECT OTHER SERVER TO THIS
 
+## Tidying up
+
+Especially after development, you may have a lot of unwanted images and containers lying around.
+
+To do this carefully, you can delete unwanted containers by first getting a list of container names with `docker ps -a`, and then using `docker rm name1 name2 name3` etc.
+Note that (on linux at least) you can autocomplete so you don't need to type the full names.
+
+You can delete unneeded images with
+```
+docker image prune
+```
+This works especially well if you make sure you've stopped & removed any unneeded containers first.
+
+If you don't need to be safe / careful, you can delete *lots* of stuff, with:
+```
+docker system prune -f
+```
