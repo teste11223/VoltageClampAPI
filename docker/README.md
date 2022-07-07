@@ -49,7 +49,7 @@ sudo docker volume inspect artefact_logs
 
 To start the component (in detached mode):
 ```
-docker run -d --always-restart -v artefact_logs:/var/log/gunicorn -p 4242:80 artefact/api
+sudo docker run -d --restart always -v artefact_logs:/var/log/gunicorn -p 4242:80 artefact/api
 ```
 
 The API is now avaliable on http://localhost:4242 on the host machine you are running the docker component on. If this is a server, you might want to proxy this through the server's webserver. For example on cardiac.nottingham we have proied it through as `https://cardiac.nottingham.ac.uk/artefact-webapp/`
