@@ -8,8 +8,6 @@ import sys
 
 import myokit
 
-from flask_restful. reqparse import RequestParser
-
 # Get path of current module
 try:
     frame = inspect.currentframe()
@@ -67,6 +65,10 @@ class Simulation(object):
             raise RuntimeError(f'Simulation {self.name} not initialised.')
 
         # Create an argument parser and a parameter name mapping
+        # We import flask_restful here instead of at the module level so that
+        # simulations can be initialised without having flask_restful
+        # installed.
+        from flask_restful. reqparse import RequestParser
         self.parser = RequestParser()
         for p in self.parameters:
             self.parser.add_argument(

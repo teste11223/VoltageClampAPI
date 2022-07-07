@@ -31,6 +31,17 @@ If it works, this should print out a whole bunch of numbers.
 
 ## Deployment: Building an image and connecting to Apache
 
-TODO
+Build the image, and delete all stopped, dangling etc. things:
 
+```
+docker build -t artefact/api .
+docker system prune -f
+```
+
+TODO: SOMEHOW RUN THIS
+```
+docker run -it --rm -p 5000:80 artefact/api
+```
+
+TODO: SOMEHOW CONNECT OTHER SERVER TO THIS
 

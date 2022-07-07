@@ -1,13 +1,29 @@
-FROM python:3.10-slim
+#
+# First, create an image to build simulations
+#
+FROM python:3.10-slim AS compile_image
 
-# Install required packages
-RUN apt-get update
-RUN apt-get install build-essential -y
-RUN apt-get install libsundials-dev -y
-RUN apt-get install nginx -y
+# Install  packages required for build
+RUN apt-get update -y
+RUN apt-get install build-essential -y --no-install-recommends
+RUN apt-get install libsundials-dev -y --no-install-recommends
+RUN pip install configparser numpy; pip install myokit --no-deps
 
-# Just for ease of development
-COPY docker/bashrc root/.bashrc
+# Copy and install the app
+ARG vclamp=/opt/vclamp
+COPY app $vclamp
+
+# Initialise the simulations (as root)
+RUN python $vclamp/simulations.py
+
+#
+# Now start a new image with just the runtime stuff
+#
+FROM python:3.10-slim AS runtime_image
+
+# Install nginx and flask
+RUN apt-get update -y; apt-get install nginx -y --no-install-recommends
+RUN pip install flask-cors flask-limiter flask-restful gunicorn configparser numpy; pip install myokit --no-deps
 
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/*
@@ -17,24 +33,13 @@ COPY docker/nginx-site.conf /etc/nginx/sites-enabled/gunicorn-site.conf
 RUN useradd -m -s /bin/bash vclamp
 RUN mkdir /var/log/gunicorn
 RUN chown vclamp /var/log/gunicorn
-RUN pip install gunicorn
 
 # Copy and install the app
 ARG vclamp=/opt/vclamp
 COPY app $vclamp
-WORKDIR $vclamp
-RUN pip install -r requirements.txt
 
 # Copy in gunicorn configuration file
 COPY docker/gunicorn.conf.py gunicorn.conf.py
-
-# Initialise the simulations (as root)
-RUN python simulations.py
-
-# Tidy up
-#RUN apt-get remove build-essential -y
-#RUN apt-get remove libsundials-dev -y
-#RUN apt-get autoremove -y
 
 # Set the entry point
 COPY docker/start.sh start.sh
