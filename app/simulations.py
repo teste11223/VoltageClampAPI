@@ -2,15 +2,26 @@
 #
 # Simulations for the flask app.
 #
+import inspect
 import os
+import sys
 
 import myokit
 
 from flask_restful. reqparse import RequestParser
 
+# Get path of current module
+try:
+    frame = inspect.currentframe()
+    DIR_ROOT = os.path.abspath(os.path.dirname(inspect.getfile(frame)))
+finally:
+    # Always manually delete frame
+    # https://docs.python.org/2/library/inspect.html#the-interpreter-stack
+    del(frame)
+
 # Paths
-DIR_CACHE = 'cache'
-DIR_MMT = 'data'
+DIR_CACHE = os.path.join(DIR_ROOT, 'cache')
+DIR_MMT = os.path.join(DIR_ROOT, 'data')
 
 
 class P(object):
