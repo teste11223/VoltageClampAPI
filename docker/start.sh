@@ -4,4 +4,4 @@
 # To be called from the working directory.
 #
 nginx
-runuser -l www-data -s /bin/bash -c "gunicorn --chdir repo/app app:app"
+runuser -l www-data -s /bin/bash -c "gunicorn --chdir $VCLAMP/app app:app"

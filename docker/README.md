@@ -11,7 +11,7 @@ The stuff that happens inside the container is explained in [design.md](./design
 This explains how to build and test the docker image.
 Note that you don't need docker to test the app: see the `app` directory for instructions on how to do that.
 
-From the `docker` directory (the one that this file is in):
+From the directory that `Dockerfile` is in:
 ```
 docker build -t artefact/api .
 ```

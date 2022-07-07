@@ -311,8 +311,7 @@ Note the lack of "bash" at the end, which specifies to use the entry point inste
 
 As a final local test before deploying, we can do:
 ```
-docker run -it --rm -p 5000:80 michael/artefact-api
+docker run -it --rm -p 5000:80 artefact/api
 ```
 Now we can use a client on the host machine to connect to port 5000!
-
 
