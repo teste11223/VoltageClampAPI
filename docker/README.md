@@ -61,3 +61,4 @@ If you don't need to be safe / careful, you can delete *lots* of stuff, with:
 ```
 docker system prune -f
 ```
+Note that this will delete built-but-not-running images for all users, which may not be appreciated on a shared machine.
