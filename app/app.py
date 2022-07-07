@@ -16,8 +16,9 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-# Running in production? Then assume we're behind a proxy (e.g. nginx)
+# Extra steps when running in production mode
 if __name__ != '__main__':
+    # Tell werkzeug that we are behind a proxy
     from werkzeug.middleware.proxy_fix import ProxyFix
     app.wsgi_app = ProxyFix(
         app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
@@ -30,6 +31,13 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=['10 per second', '30 per minute'],
 )
+
+# Use app logger in development, gunicorn logger in production
+if __name__ == '__main__':
+    logger = app.logger
+else:
+    import logging
+    logger = logging.getLogger('gunicorn.error')
 
 # In debug mode? Then initialise simulations
 if __name__ == '__main__':
@@ -56,7 +64,7 @@ class Sim(Resource):
         self.sim = sim
 
     def post(self):
-        return self.sim.run(app.logger)
+        return self.sim.run(logger)
 
     def get(self):
         return self.sim.info()

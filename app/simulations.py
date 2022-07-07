@@ -4,7 +4,6 @@
 #
 import inspect
 import os
-import sys
 
 import myokit
 
@@ -107,17 +106,13 @@ class Simulation(object):
         # Create a new simulation back-end
         b = myokit.tools.Benchmarker()
         s = myokit.Simulation.from_path(self.path)
-        logger.info(f'Simulation loaded in {b.format()}')
 
         # Parse arguments (from the global flask.Request object)
-        b.reset()
         args = self.parser.parse_args(strict=True)
         for p in self.parameters:
             s.set_constant(p.model_name, args[p.json_name])
-        logger.info(f'Parameters applied in {b.format()}')
 
         # Run and return
-        b.reset()
         d = s.run(self.duration, log=[self.time, self.voltage, self.current])
         logger.info(f'Simulation run in {b.format()}')
 

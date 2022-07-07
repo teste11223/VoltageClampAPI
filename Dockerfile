@@ -1,7 +1,7 @@
 #
 # First, create an image to build simulations
 #
-FROM python:3.10-slim AS compile_image
+FROM python:3.10-slim AS build_image
 
 # Install  packages required for build
 RUN apt-get update -y
@@ -22,7 +22,7 @@ RUN python $vclamp/simulations.py
 FROM python:3.10-slim AS runtime_image
 
 # Install nginx and flask
-RUN apt-get update -y; apt-get install nginx -y --no-install-recommends
+RUN apt-get update -y; apt-get install nginx libsundials-cvodes4 -y --no-install-recommends
 RUN pip install flask-cors flask-limiter flask-restful gunicorn configparser numpy; pip install myokit --no-deps
 
 # Configure nginx
@@ -34,9 +34,11 @@ RUN useradd -m -s /bin/bash vclamp
 RUN mkdir /var/log/gunicorn
 RUN chown vclamp /var/log/gunicorn
 
-# Copy and install the app
+# Copy and install the app, plus copy simulation cache
 ARG vclamp=/opt/vclamp
 COPY app $vclamp
+COPY --from=build_image $vclamp/cache $vclamp/cache
+WORKDIR $vclamp
 
 # Copy in gunicorn configuration file
 COPY docker/gunicorn.conf.py gunicorn.conf.py
