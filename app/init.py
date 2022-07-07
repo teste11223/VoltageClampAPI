@@ -5,4 +5,6 @@
 #
 import simulations
 
+print('Initialising simulations...')
 simulations.Simulation.initialise()
+print('Done.')
