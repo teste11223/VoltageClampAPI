@@ -76,7 +76,6 @@ class Simulation(object):
         os.makedirs(DIR_CACHE, exist_ok=True)
 
         # Initialise all
-        print('INITI ALL')
         for cls in Simulation.__subclasses__():
             cls._initialise()
 

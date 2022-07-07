@@ -252,7 +252,6 @@ We can check if the overal and site config files are OK with:
 nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
-
 ```
 
 
