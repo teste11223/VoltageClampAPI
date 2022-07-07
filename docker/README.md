@@ -4,7 +4,31 @@ If you already know how to use docker, fire up a container and read the info bel
 
 If you're new to docker, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## The docker container runs a server
+## Quickstart: building an image, running and connecting to a container
+
+From the `docker` directory (the one that this file is in):
+```
+docker build -t artefact/api .
+```
+This builds an image called `artefact/api` using the Dockerfile at `.`.
+
+Now run, and map host port 5000 to the container's port 80:
+```
+docker run -it --rm -p 5000:80 artefact/api
+```
+
+Then, in another terminal, on the host machine:
+```
+cd ../app
+python client.py
+```
+
+
+
+
+## What appens inside the container
+
+### The docker container runs a server
 
 The artefacts `app` can run as an "application server".
 This means that it handles HTTP requests on a port, but not one that we've exposed to the outside world.
@@ -22,7 +46,7 @@ Outside world --> NGINX --> Gunicorn + flask
 
 We write the last bit as `gunicorn + flask` because they run in the same Python process: `gunicorn` imports our flask `app` module directly.
 
-## The container port is mapped to a host port
+### The container port is mapped to a host port
 
 This means that if you try to access that port on the host machine, you get redirected to the nginx server in the container. 
 
@@ -36,7 +60,7 @@ Port on host machine --> |--> NGINX --> etc.    |
                          ------------------------                  
 ```
 
-## Yet another server passes requests on to this port
+### Yet another server passes requests on to this port
 
 Instead of exposing the port on the host machine that we've mapped to, we redirect to it using another server.
 For example, if the host machine has an Apache server listening on port 80, it can pass requests to a certain address to port `4321`.
@@ -55,7 +79,7 @@ Outside -->   Apache   -->  Container
  world      on port 80     on port 4321
 ```
 
-## Why'd we have to go and make things so complicated
+### Why'd we have to go and make things so complicated
 
 The simplest set-up would be to have the `app` run on a dedicated machine, listening to port 80, and without any other servers.
 But if you want to share with other things, e.g. have websites running over port 80 too, it makes sense to have a second server.
@@ -67,7 +91,7 @@ However, to be a bit more future-proof we are adding NGINX in between, so that w
 Finally having everything (except the big apache server) in a container means we can use system packages to set everything up.
 This is the easiest (only?) way to go, because server software has historically been designed under the assumption of a dedicated server.
 
-## Security
+### Security
 
 We're running in a docker container, and there is no database, user information, or any sensitive data inside the container.
 This means the only security risk is someone somehow changing what this container serves.
