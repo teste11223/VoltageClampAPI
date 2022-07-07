@@ -1,6 +1,6 @@
 # Flask-based REST API for the artefact model
 
-To install:
+To install for local development:
 
 ```
 virtualenv venv
