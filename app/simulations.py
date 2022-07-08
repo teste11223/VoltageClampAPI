@@ -23,6 +23,7 @@ DIR_MMT = os.path.join(DIR_ROOT, 'data')
 
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 0})
 
+
 class P(object):
     """ Model parameter. """
 
@@ -126,8 +127,6 @@ class Simulation(object):
             'voltage': list(d[self.voltage]),
             'current': list(d[self.current])
         }
-
-
 
 
 class DefaultSimulation(Simulation):
