@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_restful import Resource, Api
+from flask_caching import Cache
 
 import simulations
 
@@ -15,6 +16,10 @@ import simulations
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
+
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 0})
+cache.init_app(app)
+simulations.cache.init_app(app)
 
 # Extra steps when running in production mode
 if __name__ != '__main__':
@@ -50,6 +55,7 @@ sim_default = simulations.DefaultSimulation()
 # Create the "resources" this API provides
 class Overview(Resource):
     """ Provides a list of simulations. """
+    @cache.cached()
     def get(self):
         return {
             'simulations': [
@@ -66,6 +72,7 @@ class Sim(Resource):
     def post(self):
         return self.sim.run(logger)
 
+    @cache.cached()
     def get(self):
         return self.sim.info()
 
