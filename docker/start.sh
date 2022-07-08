@@ -7,4 +7,4 @@
 nginx
 touch /var/log/gunicorn/gunicorn.log
 chown vclamp:vclamp /var/log/gunicorn/gunicorn.log
-su vclamp -c "gunicorn --log-level debug --error-logfile /var/log/gunicorn/gunicorn.log app:app"
+su vclamp -c "gunicorn app:app"
