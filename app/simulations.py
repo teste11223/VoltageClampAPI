@@ -4,6 +4,7 @@
 #
 import inspect
 import os
+from flask_caching import Cache
 
 import myokit
 
@@ -19,6 +20,8 @@ finally:
 # Paths
 DIR_CACHE = os.path.join(DIR_ROOT, 'cache')
 DIR_MMT = os.path.join(DIR_ROOT, 'data')
+
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 0})
 
 
 class P(object):
@@ -102,19 +105,22 @@ class Simulation(object):
         }
 
     def run(self, logger):
+        # Parse arguments (from the global flask.Request object)
+        self.logger = logger
+        args = self.parser.parse_args(strict=True)
+        return self.perform_simulation(**args)
 
+    @cache.memoize()
+    def perform_simulation(self, **kwargs):
         # Create a new simulation back-end
         b = myokit.tools.Benchmarker()
         s = myokit.Simulation.from_path(self.path)
 
-        # Parse arguments (from the global flask.Request object)
-        args = self.parser.parse_args(strict=True)
         for p in self.parameters:
-            s.set_constant(p.model_name, args[p.json_name])
-
+            s.set_constant(p.model_name, kwargs[p.json_name])
         # Run and return
         d = s.run(self.duration, log=[self.time, self.voltage, self.current])
-        logger.info(f'Simulation run in {b.format()}')
+        self.logger.info(f'Simulation run in {b.format()}')
 
         return {
             'time': list(d[self.time]),

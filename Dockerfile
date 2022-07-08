@@ -8,7 +8,7 @@ LABEL stage=artifact-builder
 RUN apt-get update -y
 RUN apt-get install build-essential -y --no-install-recommends
 RUN apt-get install libsundials-dev -y --no-install-recommends
-RUN pip install configparser numpy; pip install myokit --no-deps
+RUN pip install Flask-Caching configparser numpy; pip install myokit --no-deps
 
 # Copy and install the app
 ARG vclamp=/opt/vclamp
@@ -24,7 +24,7 @@ FROM python:3.10-slim AS runtime_image
 
 # Install nginx and flask
 RUN apt-get update -y; apt-get install nginx libsundials-cvodes4 -y --no-install-recommends
-RUN pip install flask-cors flask-limiter flask-restful gunicorn configparser numpy; pip install myokit --no-deps
+RUN pip install flask-cors flask-limiter flask-restful Flask-Caching gunicorn configparser numpy; pip install myokit --no-deps
 
 # Configure nginx
 RUN rm /etc/nginx/sites-enabled/*
