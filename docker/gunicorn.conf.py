@@ -17,5 +17,6 @@ threads = 2
 
 # Logging
 loglevel = "debug"
+capture_output = "True"
 accesslog = "/var/log/gunicorn/access.log"
 errorlog = "/var/log/gunicorn/error.log"
