@@ -5,6 +5,4 @@
 # exit when the process is done).
 #
 nginx
-touch /var/log/gunicorn/gunicorn.log
-chown vclamp:vclamp /var/log/gunicorn/gunicorn.log
 su vclamp -c "gunicorn app:app"
