@@ -13,13 +13,13 @@ Note that you don't need docker to test the app: see the `app` directory for ins
 
 From the directory that `Dockerfile` is in:
 ```
-docker build -t artefact/api .
+sudo docker build -t artefact/api . && sudo docker image prune --filter=label=stage=artifact-builder -f
 ```
 This builds an image called `artefact/api` using the Dockerfile at `.`.
 
-Now run, and map host port 5000 to the container's port 80:
+Now run, and map host port 4242 to the container's port 80:
 ```
-docker run -it --rm -p 5000:80 artefact/api
+sudo docker run -it --rm -p 4242:80 artefact/api
 ```
 
 Then, in another terminal, on the host machine:
@@ -34,31 +34,29 @@ If it works, this should print out a whole bunch of numbers.
 Build the image, and delete all stopped, dangling etc. things:
 
 ```
-docker build -t artefact/api .
+sudo docker build -t artefact/api . && sudo docker image prune --filter=label=stage=artifact-builder -f
 ```
 
-TODO: SOMEHOW RUN THIS, BUT ROUTE STDOUT AND STDERR TO /VAR/LOG/VCLAMP, AND DAEMONIZE
+To be able to access logs set up a docker volume
 ```
-docker run -it --rm -p 5000:80 artefact/api
+sudo docker volume create artefact_logs
 ```
 
-TODO: SOMEHOW CONNECT OTHER SERVER TO THIS
-
-## Tidying up
-
-Especially after development, you may have a lot of unwanted images and containers lying around.
-
-To do this carefully, you can delete unwanted containers by first getting a list of container names with `docker ps -a`, and then using `docker rm name1 name2 name3` etc.
-Note that (on linux at least) you can autocomplete so you don't need to type the full names.
-
-You can delete unneeded images with
+You can see where the data will be stored (the Mountpoint) by doing:
 ```
-docker image prune
+sudo docker volume inspect artefact_logs
 ```
-This works especially well if you make sure you've stopped & removed any unneeded containers first.
 
-If you don't need to be safe / careful, you can delete *lots* of stuff, with:
+To start the component (in detached mode):
 ```
-docker system prune -f
+sudo docker run -d --restart always -v artefact_logs:/var/log/gunicorn -p 4242:80 artefact/api
 ```
-Note that this will delete built-but-not-running images for all users, which may not be appreciated on a shared machine.
+
+The API is now avaliable on http://localhost:4242 on the host machine you are running the docker component on. If this is a server, you might want to proxy this through the server's webserver. For example on cardiac.nottingham we have proied it through as `https://cardiac.nottingham.ac.uk/artefact-webapp/`
+
+This is achieved with the following config:
+```
+<Location /artefact-webapp>
+   ProxyPass http://localhost:4242
+   ProxyPassReverse http://localhost:4242
+</Location>

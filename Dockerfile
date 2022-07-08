@@ -2,6 +2,7 @@
 # First, create an image to build simulations
 #
 FROM python:3.10-slim AS build_image
+LABEL stage=artifact-builder
 
 # Install  packages required for build
 RUN apt-get update -y
