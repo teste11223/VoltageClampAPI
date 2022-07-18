@@ -46,6 +46,10 @@ class P(object):
             'step': self.step,
         }
 
+    def fix_bounds(self, value):
+        """ Returns ``value`` if in bounds, else nearest limit. """
+        return min(self.upper, max(self.lower, value))
+
 
 class Simulation(object):
     """
@@ -116,8 +120,10 @@ class Simulation(object):
         b = myokit.tools.Benchmarker()
         s = myokit.Simulation.from_path(self.path)
 
+        # Set parameters
         for p in self.parameters:
-            s.set_constant(p.model_name, kwargs[p.json_name])
+            s.set_constant(p.model_name, p.fix_bounds(kwargs[p.json_name]))
+
         # Run and return
         d = s.run(self.duration, log=[self.time, self.voltage, self.current])
         self.logger.info(f'Simulation run in {b.format()}')

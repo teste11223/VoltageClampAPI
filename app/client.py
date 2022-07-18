@@ -44,12 +44,11 @@ else:
     data = json.dumps({
         #'membrane_conductance': 10,
         'membrane_capacitance': 20,
-        'pipette_capacitance': 5,
-        #'series_resistance': 30,
         'esimated_membrane_capacitance': 25,
+        'pipette_capacitance': 5,
         'esimated_pipette_capacitance': 4,
-        #'esimated_series_resistance': 25,
-        #'series_resistance_compensation_enabled': True,
+        'series_resistance': 10,
+        'esimated_series_resistance': 10,
         #'series_resistance_compensation': 70,
         'effective_voltage_offset': 0,
     })
