@@ -160,6 +160,8 @@ class DefaultSimulation(Simulation):
         P('effective_voltage_offset', 'voltage_clamp.V_offset_eff', 'Effective voltage offset (mV)', 0, -10, 10, 0.5),  # noqa
         P('seal_resistance', 'voltage_clamp.R_seal_MOhm', 'Seal resistance (MOhm)', 500, 10, 10000, 1),  # noqa
         P('estimated_seal_resistance', 'voltage_clamp.R_seal_est_MOhm', 'Estimated seal resistance (MOhm)', 1000, 10, 10000, 1),  # noqa
+        P('leak_reversal_potential', 'voltage_clamp.E_leak', 'Leak reversal potential (mV)', -80, -150, 150, 0.5),  # noqa
+        P('estimated_leak_reversal_potential', 'voltage_clamp.E_leak_est', 'Estimated leak reversal potential (mV)', -80, -150, 150, 0.5),  # noqa
     ]
     time = 'engine.time'
     voltage = 'membrane.V'
