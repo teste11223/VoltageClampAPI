@@ -46,6 +46,10 @@ class P(object):
             'step': self.step,
         }
 
+    def fix_bounds(self, value):
+        """ Returns ``value`` if in bounds, else nearest limit. """
+        return min(self.upper, max(self.lower, value))
+
 
 class Simulation(object):
     """
@@ -116,8 +120,10 @@ class Simulation(object):
         b = myokit.tools.Benchmarker()
         s = myokit.Simulation.from_path(self.path)
 
+        # Set parameters
         for p in self.parameters:
-            s.set_constant(p.model_name, kwargs[p.json_name])
+            s.set_constant(p.model_name, p.fix_bounds(kwargs[p.json_name]))
+
         # Run and return
         d = s.run(self.duration, log=[self.time, self.voltage, self.current])
         self.logger.info(f'Simulation run in {b.format()}')
@@ -145,18 +151,21 @@ class DefaultSimulation(Simulation):
     parameters = [
         #P('membrane_conductance', '', 'Membrane conductance (ns)', 10, 0, 40, 0.5),  # noqa
         P('membrane_capacitance', 'cell.Cm', 'Membrane capacitance (pF)', 20, 10, 150, 5),  # noqa
-        P('pipette_capacitance', 'voltage_clamp.C_prs', 'Pipette capacitance (pF)', 5, 0, 10, 0.1),  # noqa
-        #P('series_resistance', 'voltage_clamp.R_series', 'Series resistance (MOhm)', 30, 0.5, 100, 0.5),  # noqa
         P('esimated_membrane_capacitance', 'voltage_clamp.Cm_est', 'Estimated membrane capacitance (pF)', 25, 10, 150, 5),  # noqa
+        P('pipette_capacitance', 'voltage_clamp.C_prs', 'Pipette capacitance (pF)', 5, 0, 10, 0.1),  # noqa
         P('esimated_pipette_capacitance', 'voltage_clamp.C_prs_est', 'Estimated pipette capacitance (pF)', 4, 0, 10, 0.1),  # noqa
-        #P('esimated_series_resistance', 'voltage_clamp.R_series_est', 'Estimated series resistance (MOhm)', 25, 0.5, 100, 0.5),  # noqa
-        #P('series_resistance_compensation_enabled', '', 'Enable series resistance compensation', 0, 0, 1, 1),  # noqa
-        #P('series_resistance_compensation', '', 'Percentage series resistance (%)', 0, 0, 100, 5),  # noqa
+        P('series_resistance', 'voltage_clamp.R_series_MOhm', 'Series resistance (MOhm)', 10, 0.5, 100, 0.5),  # noqa
+        P('esimated_series_resistance', 'voltage_clamp.R_series_est_MOhm', 'Estimated series resistance (MOhm)', 10, 0.5, 100, 0.5),  # noqa
+        P('series_resistance_compensation', 'voltage_clamp.alpha_percentage', 'Percentage series resistance (%)', 70, 0, 100, 1),  # noqa
         P('effective_voltage_offset', 'voltage_clamp.V_offset_eff', 'Effective voltage offset (mV)', 0, -10, 10, 0.5),  # noqa
+        P('seal_resistance', 'voltage_clamp.R_seal_MOhm', 'Seal resistance (MOhm)', 500, 10, 10000, 1),  # noqa
+        P('estimated_seal_resistance', 'voltage_clamp.R_seal_est_MOhm', 'Estimated seal resistance (MOhm)', 1000, 10, 10000, 1),  # noqa
+        P('leak_reversal_potential', 'voltage_clamp.E_leak', 'Leak reversal potential (mV)', -80, -150, 150, 0.5),  # noqa
+        P('estimated_leak_reversal_potential', 'voltage_clamp.E_leak_est', 'Estimated leak reversal potential (mV)', -80, -150, 150, 0.5),  # noqa
     ]
     time = 'engine.time'
     voltage = 'membrane.V'
-    current = 'voltage_clamp.I_out'
+    current = 'voltage_clamp.I_post'
     duration = 150
 
     @classmethod

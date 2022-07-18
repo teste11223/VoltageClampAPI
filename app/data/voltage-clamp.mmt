@@ -45,7 +45,7 @@ Cm = 98.7109 [pF]
 use voltage_clamp.V_p, voltage_clamp.R_series, voltage_clamp.V_offset_eff
 use voltage_clamp.I_leak
 use cell.Cm
-I_ion = 0
+I_ion = 0 [A/F]
     in [A/F]
 dot(V) = (V_p + V_offset_eff - V) / (Cm * R_series) - (I_ion + I_leak)
     in [mV]
@@ -59,17 +59,28 @@ use membrane.V
 V_c = engine.pace * 1 [mV]
     desc: Command voltage
     in [mV]
-Cm_est = 100
+Cm_est = 100 [pF]
     in [pF]
     desc: Estimated cell capacitance
-R_series = 10e-3 [GOhm]
-    in [GOhm]
-    desc: Series resistance (~MegaOhms)
-R_series_est = 10e-3 [GOhm]
-    in [GOhm]
+
+R_series_MOhm = 10 [MOhm]
+    in [MOhm]
+    desc: Series resistance
+R_series_est_MOhm = 10 [MOhm]
+    in [MOhm]
     desc: Estimated series resistance
-alpha = 0.7
-    desc: Percentage compensation
+R_series = R_series_MOhm * 1e-3 [GOhm/MOhm]
+    in [GOhm]
+    desc: Series resistance, converted to GOhm
+R_series_est = R_series_est_MOhm * 1e-3 [GOhm/MOhm]
+    in [GOhm]
+    desc: Estimated series resistance, converted to GOhm
+
+alpha_percentage = 70
+    desc: Percentage series resistance compensation
+alpha = alpha_percentage / 100
+    desc: Compensation, converted to a fraction
+
 C_prs = 4 [pF]
     in [pF]
     desc: 'Parasitic'/pipette capacitance at electrode
@@ -105,14 +116,18 @@ dot(I_out) = (I_in - I_out) / tau_out
 # Supercharging
 # From https://doi.org/10.1007/978-1-4419-1229-9_4 Fig. 18
 dot(V_est) = if(
-        Cm_est < 1e-6 or R_series_est < 1e-6, 0,
+        Cm_est < 1e-6 [pF] or R_series_est < 1e-6 [GOhm], 
+        0 [mV/ms],
         (V_c - V_est) / ((1 - alpha) * Cm_est * R_series_est)
     )
     in [mV]
     desc: Supercharging voltage
 
-# Leak current, assumed to be linear
-g_leak = 2 [pA/mV]
+# Leak current, assumed to be linear (caused by the imperfect seal)
+R_seal_MOhm = 500 [MOhm]
+    in [MOhm]
+    desc: Seal resistance
+g_leak = 1 / (R_seal_MOhm * 1e-3 [GOhm/MOhm])
     in [1/GOhm]
     desc: Leak conductance (thought as inverse of seal resistance)
 E_leak = -80 [mV]
@@ -126,15 +141,21 @@ I_in = (
         (V_p - V + V_offset_eff) / R_series
         + C_prs * dot(V_p)
         - C_prs_est * dot(V_clamp)
-        - Cm_est * if(R_series_est < 1e-6, dot(V_clamp), dot(V_est))
+        - Cm_est * if(R_series_est < 1e-6 [GOhm], dot(V_clamp), dot(V_est))
     ) / Cm
     in [A/F]
 
 # Leak subtracted (post-processed) current
-g_leak_est = 1.5 [pA/mV]
+R_seal_est_MOhm = 1000 [MOhm]
+    in [MOhm]
+    desc: Estimeated seal resistance
+g_leak_est = 1 / (R_seal_est_MOhm * 1e-3 [GOhm/MOhm])
     in [nS]
     desc: Estimated leak conductance
-I_post = I_out - g_leak_est * (V_c - E_leak) / Cm
+E_leak_est = -80 [mV]
+    in [mV]
+    desc: Estimated leak reversal potential
+I_post = I_out - g_leak_est * (V_c - E_leak_est) / Cm
     in [A/F]
     desc: Leak subtracted current
     label measured_current
