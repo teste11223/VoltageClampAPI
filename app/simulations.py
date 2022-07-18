@@ -158,6 +158,8 @@ class DefaultSimulation(Simulation):
         P('esimated_series_resistance', 'voltage_clamp.R_series_est_MOhm', 'Estimated series resistance (MOhm)', 10, 0.5, 100, 0.5),  # noqa
         P('series_resistance_compensation', 'voltage_clamp.alpha_percentage', 'Percentage series resistance (%)', 70, 0, 100, 1),  # noqa
         P('effective_voltage_offset', 'voltage_clamp.V_offset_eff', 'Effective voltage offset (mV)', 0, -10, 10, 0.5),  # noqa
+        P('seal_resistance', 'voltage_clamp.R_seal_MOhm', 'Seal resistance (MOhm)', 500, 10, 10000, 1),  # noqa
+        P('estimated_seal_resistance', 'voltage_clamp.R_seal_est_MOhm', 'Estimated seal resistance (MOhm)', 1000, 10, 10000, 1),  # noqa
     ]
     time = 'engine.time'
     voltage = 'membrane.V'

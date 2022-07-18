@@ -123,8 +123,11 @@ dot(V_est) = if(
     in [mV]
     desc: Supercharging voltage
 
-# Leak current, assumed to be linear
-g_leak = 2 [pA/mV]
+# Leak current, assumed to be linear (caused by the imperfect seal)
+R_seal_MOhm = 500 [MOhm]
+    in [MOhm]
+    desc: Seal resistance
+g_leak = 1 / (R_seal_MOhm * 1e-3 [GOhm/MOhm])
     in [1/GOhm]
     desc: Leak conductance (thought as inverse of seal resistance)
 E_leak = -80 [mV]
@@ -143,10 +146,16 @@ I_in = (
     in [A/F]
 
 # Leak subtracted (post-processed) current
-g_leak_est = 1.5 [pA/mV]
+R_seal_est_MOhm = 1000 [MOhm]
+    in [MOhm]
+    desc: Estimeated seal resistance
+g_leak_est = 1 / (R_seal_est_MOhm * 1e-3 [GOhm/MOhm])
     in [nS]
     desc: Estimated leak conductance
-I_post = I_out - g_leak_est * (V_c - E_leak) / Cm
+E_leak_est = -80 [mV]
+    in [mV]
+    desc: Estimated leak reversal potential
+I_post = I_out - g_leak_est * (V_c - E_leak_est) / Cm
     in [A/F]
     desc: Leak subtracted current
     label measured_current
