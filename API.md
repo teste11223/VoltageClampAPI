@@ -33,6 +33,7 @@ This returns a JSON object with the simulation results:
     "current": [0, 0, 0, ...]
 }
 ```
+Where `time` is in `ms`, `voltage` is in `mV`, and `current` is in `A/F` (often denoted as `pA/pF`).
 
 To run a simulation with changed simulation parameters, send a JSON object in the `POST` request that maps parameter names to values.
 For example:
