@@ -55,5 +55,19 @@ else:
     })
 
     r = requests.post(f'{url}/default', data=data, headers=head)
-    print(r.json())
+    j = r.json()
+    print(j.keys())
 
+    try:
+        import matplotlib.pyplot as plt
+        fig = plt.figure()
+        ax = fig.add_subplot(2, 1, 1)
+        ax.set_ylabel('Voltage (mV)')
+        ax.plot(j['time'], j['voltage'])
+        ax = fig.add_subplot(2, 1, 2)
+        ax.set_xlabel('Time (ms)')
+        ax.set_ylabel('Current (pA/pF)')
+        ax.plot(j['time'], j['current'])
+        plt.show()
+    finally:
+        pass
