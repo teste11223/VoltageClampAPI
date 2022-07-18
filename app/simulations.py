@@ -163,7 +163,7 @@ class DefaultSimulation(Simulation):
     ]
     time = 'engine.time'
     voltage = 'membrane.V'
-    current = 'voltage_clamp.I_out'
+    current = 'voltage_clamp.I_post'
     duration = 150
 
     @classmethod
