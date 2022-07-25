@@ -33,7 +33,7 @@ The bits you need to know about to make changes to the app are FlaskRESTful and 
 
 The API itself is defined in [API.md](../API.md).
 
-## How the simmulations work
+## How the simulations work
 
 Simulations are defined in `simulations.py`.
 
