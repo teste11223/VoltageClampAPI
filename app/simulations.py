@@ -4,6 +4,9 @@
 #
 import inspect
 import os
+
+import numpy as np
+
 from flask_caching import Cache
 
 import myokit
@@ -62,6 +65,12 @@ class Simulation(object):
     name = None
     description = None
     parameters = []
+
+    time = None         # Must be set
+    voltage = None      # Must be set
+    current = None      # Must be set
+    duration = None     # Must be set
+    log_times = None
 
     def __init__(self):
 
@@ -125,7 +134,8 @@ class Simulation(object):
             s.set_constant(p.model_name, p.fix_bounds(kwargs[p.json_name]))
 
         # Run and return
-        d = s.run(self.duration, log=[self.time, self.voltage, self.current])
+        d = s.run(self.duration, log=[self.time, self.voltage, self.current],
+                  log_times=self.log_times)
         self.logger.info(f'Simulation run in {b.format()}')
 
         return {
@@ -166,7 +176,8 @@ class DefaultSimulation(Simulation):
     time = 'engine.time'
     voltage = 'membrane.V'
     current = 'voltage_clamp.I_post'
-    duration = 150
+    duration = 150.1
+    log_times = np.arange(0, duration, 0.1)
 
     @classmethod
     def _initialise(cls):
