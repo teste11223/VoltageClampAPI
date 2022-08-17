@@ -66,11 +66,14 @@ class Simulation(object):
     description = None
     parameters = []
 
-    time = None         # Must be set
-    voltage = None      # Must be set
-    current = None      # Must be set
-    duration = None     # Must be set
-    log_times = None
+    command_voltage = None
+    membrane_voltage = None
+    recorded_current = None
+    cell_current = None
+    ideal_current = None
+
+    duration = None
+    log_times = None    # Optional
 
     def __init__(self):
 
@@ -88,6 +91,15 @@ class Simulation(object):
         for p in self.parameters:
             self.parser.add_argument(
                 p.json_name, type=float, default=p.default, required=False)
+
+        self.log = [
+            self.time,
+            self.command_voltage,
+            self.membrane_voltage,
+            self.recorded_current,
+            self.cell_current,
+            self.ideal_current,
+        ]
 
     @classmethod
     def _initialise(cls):
@@ -134,14 +146,17 @@ class Simulation(object):
             s.set_constant(p.model_name, p.fix_bounds(kwargs[p.json_name]))
 
         # Run and return
-        d = s.run(self.duration, log=[self.time, self.voltage, self.current],
+        d = s.run(self.duration, log=self.log,
                   log_times=self.log_times)
         self.logger.info(f'Simulation run in {b.format()}')
 
         return {
             'time': list(d[self.time]),
-            'voltage': list(d[self.voltage]),
-            'current': list(d[self.current])
+            'command_voltage': list(d[self.command_voltage]),
+            'membrane_voltage': list(d[self.membrane_voltage]),
+            'recorded_current': list(d[self.recorded_current]),
+            'cell_current': list(d[self.cell_current]),
+            'ideal_current': list(d[self.ideal_current]),
         }
 
 
@@ -158,8 +173,9 @@ class DefaultSimulation(Simulation):
         ' stimulated with a 20mV pulse for 50ms (0mV for 50ms, then 20mV for'
         ' 50ms, then 0mV for 50ms again).'
     )
+
     parameters = [
-        #P('membrane_conductance', '', 'Membrane conductance (ns)', 10, 0, 40, 0.5),  # noqa
+        P('membrane_conductance', 'membrane.gm', 'Membrane conductance (nS)', 10, 0, 40, 0.5),  # noqa
         P('membrane_capacitance', 'cell.Cm', 'Membrane capacitance (pF)', 20, 10, 150, 5),  # noqa
         P('esimated_membrane_capacitance', 'voltage_clamp.Cm_est', 'Estimated membrane capacitance (pF)', 25, 10, 150, 5),  # noqa
         P('pipette_capacitance', 'voltage_clamp.C_prs', 'Pipette capacitance (pF)', 5, 0, 10, 0.1),  # noqa
@@ -173,11 +189,16 @@ class DefaultSimulation(Simulation):
         P('leak_reversal_potential', 'voltage_clamp.E_leak', 'Leak reversal potential (mV)', -80, -150, 150, 0.5),  # noqa
         P('estimated_leak_reversal_potential', 'voltage_clamp.E_leak_est', 'Estimated leak reversal potential (mV)', -80, -150, 150, 0.5),  # noqa
     ]
+
     time = 'engine.time'
-    voltage = 'membrane.V'
-    current = 'voltage_clamp.I_post'
+    command_voltage = 'voltage_clamp.V_c'
+    membrane_voltage ='membrane.V'
+    recorded_current = 'voltage_clamp.I_out_pA'
+    cell_current = 'membrane.I_ion'
+    ideal_current = 'membrane.I_ideal'
+
     duration = 150.1
-    log_times = np.arange(0, duration, 0.1)
+    log_times = np.arange(0, duration, 0.01)
 
     @classmethod
     def _initialise(cls):

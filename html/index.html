@@ -9,16 +9,24 @@
     <script src="jquery-3.6.0.min.js" type="text/javascript"></script>
     <script>
 
-        updateGraph = function(data, status) {
+        updateGraphs = function(data, status) {
             $('#status').html(null)
-            graph = document.getElementById('v_graph');
+            graph1 = document.getElementById('v_graph');
+            graph2 = document.getElementById('c_graph');
             layout = {
                 margin: {t: 0, r: 0, l: 30, b: 30}
             }
-            data1 = [{x: data.time, y: data.voltage}];
-            data2 = [{x: data.time, y: data.current}];
-            Plotly.newPlot('v_graph', data1, layout);
-            Plotly.newPlot('c_graph', data2, layout);
+            vdata = [
+                {x: data.time, y: data.command_voltage, name: 'command voltage'},
+                {x: data.time, y: data.membrane_voltage, name: 'membrane voltage'}
+            ];
+            cdata = [
+                {x: data.time, y: data.ideal_current, name: 'ideal current'},
+                {x: data.time, y: data.cell_current, name: 'cell current'},
+                {x: data.time, y: data.recorded_current, name: 'recorded current'}
+            ];
+            Plotly.newPlot('v_graph', vdata, layout);
+            Plotly.newPlot('c_graph', cdata, layout);
     	}
 
     	simError = function(data, status) {
@@ -33,7 +41,9 @@
         gatherParameters = function() {
             params = {};
             voff = $('#voff').val();
+            alpha = $('#alpha').val()
             params.effective_voltage_offset = voff;
+            params.series_resistance_compensation = alpha;
             return params;
         }
 
@@ -55,7 +65,7 @@
                     method: "post",
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8",
-                    success: updateGraph,
+                    success: updateGraphs,
                     error: simError,
                 });
         	});
@@ -71,6 +81,10 @@
             <div>
                 <input value="0" id="voff" />
                 <label for="#voff">Effective voltage offset (mV)</label>
+            </div>
+            <div>
+                <input value="70" id="alpha" />
+                <label for="#alpha">Series resistance compensation (%)</label>
             </div>
         </div>
     </body>

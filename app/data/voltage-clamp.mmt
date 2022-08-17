@@ -1,8 +1,8 @@
 [[model]]
-name: voltage_clamp_model
-display_name: Lei et al., 2020 Voltage clamp model
+name: voltage_clamp_model_api
+display_name: Lei et al., 2020 Voltage clamp model adapted for API
 mmt_authors: Chon Lok Lei, Michael Clerx
-version: 20210824
+version: 20212817
 desc: """
     Voltage clamp model with standard compensation [1].
 
@@ -13,11 +13,11 @@ desc: """
         Phil. Trans. R. Soc. A, 378: 20190348, 2020.
         https://doi.org/10.1098/rsta.2019.0348
 """
-membrane.V            = -80
-voltage_clamp.V_clamp = -80
-voltage_clamp.V_p     = -80
-voltage_clamp.V_est   = -80
-voltage_clamp.I_out   =  0
+membrane.V            = 0
+voltage_clamp.V_clamp = 0
+voltage_clamp.V_p     = 0
+voltage_clamp.V_est   = 0
+voltage_clamp.I_out   = 0
 
 #
 # Simulator variables: To be replaced with model variables
@@ -33,7 +33,7 @@ pace = 0
 # Cell size: To be replaced with model variable
 #
 [cell]
-Cm = 98.7109 [pF]
+Cm = 20 [pF]
     in [pF]
     desc: Cell capacitance
 
@@ -45,9 +45,13 @@ Cm = 98.7109 [pF]
 use voltage_clamp.V_p, voltage_clamp.R_series, voltage_clamp.V_offset_eff
 use voltage_clamp.I_leak
 use cell.Cm
-I_ion = 0 [A/F]
-    in [A/F]
-dot(V) = (V_p + V_offset_eff - V) / (Cm * R_series) - (I_ion + I_leak)
+gm = 10 [nS]
+    in [nS]
+I_ion = gm * V
+    in [pA]
+I_ideal = gm * voltage_clamp.V_c
+    in [pA]
+dot(V) = (V_p + V_offset_eff - V) / (Cm * R_series) - (I_ion + I_leak) / cell.Cm
     in [mV]
 
 #
@@ -59,14 +63,14 @@ use membrane.V
 V_c = engine.pace * 1 [mV]
     desc: Command voltage
     in [mV]
-Cm_est = 100 [pF]
+Cm_est = 25 [pF]
     in [pF]
     desc: Estimated cell capacitance
 
-R_series_MOhm = 10 [MOhm]
+R_series_MOhm = 30 [MOhm]
     in [MOhm]
     desc: Series resistance
-R_series_est_MOhm = 10 [MOhm]
+R_series_est_MOhm = 25 [MOhm]
     in [MOhm]
     desc: Estimated series resistance
 R_series = R_series_MOhm * 1e-3 [GOhm/MOhm]
@@ -76,19 +80,19 @@ R_series_est = R_series_est_MOhm * 1e-3 [GOhm/MOhm]
     in [GOhm]
     desc: Estimated series resistance, converted to GOhm
 
-alpha_percentage = 70
+alpha_percentage = 0
     desc: Percentage series resistance compensation
 alpha = alpha_percentage / 100
     desc: Compensation, converted to a fraction
 
-C_prs = 4 [pF]
+C_prs = 5 [pF]
     in [pF]
     desc: 'Parasitic'/pipette capacitance at electrode
-C_prs_est = 3 [pF]
+C_prs_est = 4 [pF]
     in [pF]
     desc: Estimated 'parasitic'/pipette capacitance at electrode
 
-V_offset_eff = 5 [mV]
+V_offset_eff = 0 [mV]
     in [mV]
     desc: Effective voltage offset
 
@@ -112,11 +116,13 @@ tau_out = 7.5e-3 [ms]
 dot(I_out) = (I_in - I_out) / tau_out
     in [A/F]
     desc: Measured current
+I_out_pA = I_out * cell.Cm
+    in [pA]
 
 # Supercharging
 # From https://doi.org/10.1007/978-1-4419-1229-9_4 Fig. 18
 dot(V_est) = if(
-        Cm_est < 1e-6 [pF] or R_series_est < 1e-6 [GOhm], 
+        Cm_est < 1e-6 [pF] or R_series_est < 1e-6 [GOhm],
         0 [mV/ms],
         (V_c - V_est) / ((1 - alpha) * Cm_est * R_series_est)
     )
@@ -133,15 +139,17 @@ g_leak = 1 / (R_seal_MOhm * 1e-3 [GOhm/MOhm])
 E_leak = -80 [mV]
     in [mV]
     desc: Leak reversal potential
-I_leak = g_leak * (V - E_leak) / Cm
-    in [A/F]
+I_leak = g_leak * (V - E_leak)
+    in [pA]
     desc: Leak current
 
 I_in = (
         (V_p - V + V_offset_eff) / R_series
         + C_prs * dot(V_p)
-        - C_prs_est * dot(V_clamp)
-        - Cm_est * if(R_series_est < 1e-6 [GOhm], dot(V_clamp), dot(V_est))
+        - if(alpha == 0, 0 [pA], 
+            + C_prs_est * dot(V_clamp)
+            + Cm_est * if(R_series_est < 1e-6 [GOhm], dot(V_clamp), dot(V_est))
+            )
     ) / Cm
     in [A/F]
 
@@ -159,4 +167,49 @@ I_post = I_out - g_leak_est * (V_c - E_leak_est) / Cm
     in [A/F]
     desc: Leak subtracted current
     label measured_current
+
+
+[[protocol]]
+# V     start   duration period repeats
+0       0       50       0      0
+20      next    50       0      0
+0       next    50       0      0
+
+[[script]]
+import matplotlib.pyplot as plt
+import myokit
+
+m = get_model()
+p = get_protocol()
+
+s = myokit.Simulation(m, p)
+#s.pre(1500)
+
+d = s.run(150, log_interval=1e-2)
+
+purple = '#636efa'
+red = '#ef553b'
+orange = '#ffa15a'
+green = '#00cc96'
+
+fig = plt.figure(figsize=(12, 6))
+ax = fig.add_subplot(2, 1, 1)
+ax.grid()
+ax.plot(d.time(), d['voltage_clamp.V_c'], label='Command voltage', 
+        color=purple, ds='steps-post')
+ax.plot(d.time(), d['membrane.V'], '--', label='Membrane voltage', color=red)
+ax.legend()
+
+ax = fig.add_subplot(2, 1, 2)
+ax.grid()
+ax.set_ylim(-1e3, 1e3)
+plt.plot(d.time(), d['voltage_clamp.I_out_pA'], label='Recorded current', 
+         color=green)
+plt.plot(d.time(), d['membrane.I_ion'], '--', label='Cell current', 
+         color=purple)
+plt.plot(d.time(), d['membrane.I_ideal'], ':', label='Ideal current', 
+         color=red, ds='steps-post')
+
+
+plt.show()
 

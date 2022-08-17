@@ -29,11 +29,14 @@ This returns a JSON object with the simulation results:
 ```
 {
     "time": [0, 1, 2, ...],
-    "voltage": [-80, -80, -80, ...],
-    "current": [0, 0, 0, ...]
+    "command_voltage": [-80, -80, -80, ...],
+    "membrane_voltage": [-80, -80, -80, ...],
+    "recorded_current": [0, 0, 0, ...],
+    "cell_current": [0, 0, 0, ...],
+    "ideal_current": [0, 0, 0, ...]
 }
 ```
-Where `time` is in `ms`, `voltage` is in `mV`, and `current` is in `A/F` (often denoted as `pA/pF`).
+Where time is in `ms`, voltages are in `mV`, and currents are in `pA`.
 
 To run a simulation with changed simulation parameters, send a JSON object in the `POST` request that maps parameter names to values.
 For example:
