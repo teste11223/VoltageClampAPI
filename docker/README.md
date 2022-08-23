@@ -60,3 +60,16 @@ This is achieved with the following config:
    ProxyPass http://localhost:4242
    ProxyPassReverse http://localhost:4242
 </Location>
+```
+
+## Re-deployment: removing an existing container & image and deploying a new version after code changes
+To re-deploy the api after the code has changes we need to update the code, remove the old container & the image, rebuild * redeploy.
+`sudo docker ps` is a handy commands to list the containers running.
+`sudo docker image list` is a handy command to show currentluy available images.
+
+The commands below assume you have names the iamge and conatiner as in this tutorial.
+
+- don't forget to make sure you have the latest version of the code checked out.
+- remove the container `sudo docker rm -f artefact`
+- remove the image `sudo docker image rm artefact/api:latest`
+- re-deploy by following the deployment steps above. There is no need to remove the vlume, so you can skip the volume creation step.
