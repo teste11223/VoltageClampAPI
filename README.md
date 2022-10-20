@@ -1,4 +1,4 @@
-# A python web api for the artefacts app
+# A python web api for the voltage clamp artefacts app
 
 This repository contains
 
@@ -13,3 +13,10 @@ If you want to **modify** the app, or just play around with it locally, look at 
 If you want to **build a client**, look at the API docs (link below) or the examples in [html](./html) and [client.py](./app/client.py).
 
 The API itself is documented in [API.md](./API.md).
+
+This app uses the model from [CardiacModelling/VOltageClampModel](https://github.com/CardiacModelling/VoltageClampModel) [1].
+
+[1] Lei, C.L., Clerx, M., Whittaker, D.G., Gavaghan D.J., de Boer, T.P. and Mirams, G.R.
+(2020).
+[Accounting for variability in ion current recordings using a mathematical model of artefacts in voltage-clamp experiments](https://doi.org/10.1098/rsta.2019.0348).
+Philosophical Transactions of the Royal Society A, 378: 20190348.
