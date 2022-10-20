@@ -14,7 +14,7 @@ If you want to **build a client**, look at the API docs (link below) or the exam
 
 The API itself is documented in [API.md](./API.md).
 
-This app uses the model from [CardiacModelling/VOltageClampModel](https://github.com/CardiacModelling/VoltageClampModel) [1].
+This app uses the model from [CardiacModelling/VoltageClampModel](https://github.com/CardiacModelling/VoltageClampModel) [1].
 
 [1] Lei, C.L., Clerx, M., Whittaker, D.G., Gavaghan D.J., de Boer, T.P. and Mirams, G.R.
 (2020).
