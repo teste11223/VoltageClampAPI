@@ -25,8 +25,8 @@ FROM python:3.10-slim AS runtime_image
 # Install nginx and flask
 RUN apt-get update -y; 
 RUN apt-get install nginx -y;
-#RUN apt-get install libsundials-dev -y --no-install-recommends
-RUN apt-get install libsundials-cvodes4 -y --no-install-recommends;
+RUN apt-get install libsundials-dev -y --no-install-recommends
+#RUN apt-get install libsundials-cvodes4 -y --no-install-recommends;
 RUN pip install flask-cors flask-limiter flask-restful Flask-Caching gunicorn configparser numpy; pip install myokit --no-deps
 
 # Configure nginx
