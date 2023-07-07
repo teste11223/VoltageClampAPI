@@ -31,11 +31,9 @@ if __name__ != '__main__':
 
 # Add limiter (note that nginx etc. should handle this too).
 # https://flask-limiter.readthedocs.io/en/stable/
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=['10 per second', '30 per minute'],
-)
+limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day", "50 per hour"])
+
+
 
 # Use app logger in development, gunicorn logger in production
 if __name__ == '__main__':
